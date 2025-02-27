@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Customer Feedback</title>
+    <title>ระบบประเมินความพึงพอใจ</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Sukhumvit Set', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
@@ -14,28 +14,31 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
         .container {
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
             text-align: center;
             padding: 30px 20px;
-            margin-bottom: 20px;
+            margin: 20px;
         }
         .company-logo {
             margin-bottom: 20px;
-            max-width: 150px;
+            max-width: 200px;
+            max-height: 100px;
+            object-fit: contain;
         }
         h1 {
             color: #333;
             font-size: 24px;
             margin-bottom: 30px;
+            font-weight: 600;
         }
         .feedback-options {
             display: flex;
@@ -49,16 +52,14 @@
             cursor: pointer;
             transition: transform 0.2s;
             font-size: 50px;
-            padding: 10px;
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
+            padding: 15px 5px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             -webkit-tap-highlight-color: transparent;
             margin: 5px;
+            width: 80px;
         }
         .feedback-button:hover, .feedback-button:focus {
             transform: scale(1.1);
@@ -66,9 +67,15 @@
         }
         .emoji-label {
             display: block;
-            margin-top: 5px;
+            margin-top: 8px;
             font-size: 14px;
-            color: #666;
+            color: #555;
+        }
+        .rating-value {
+            font-weight: bold;
+            margin-top: 3px;
+            font-size: 18px;
+            color: #333;
         }
         .thank-you {
             font-size: 28px;
@@ -78,12 +85,15 @@
         }
         .location-selector {
             margin-bottom: 20px;
-            padding: 10px;
-            width: 80%;
-            border-radius: 5px;
+            padding: 12px;
+            width: 90%;
+            border-radius: 8px;
             border: 1px solid #ddd;
             font-size: 16px;
             -webkit-appearance: none;
+            background-color: #fff;
+            text-align: center;
+            font-family: 'Sukhumvit Set', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         .settings-button {
             position: absolute;
@@ -100,7 +110,7 @@
         .settings-panel {
             position: fixed;
             top: 0;
-            right: -350px; /* Increased to ensure it's fully off-screen */
+            right: -350px;
             width: 300px;
             height: 100%;
             background-color: white;
@@ -184,20 +194,44 @@
             margin: 10px 0;
             display: none;
         }
-        .rating-value {
-            font-weight: bold;
-            margin-top: 3px;
-            font-size: 16px;
-        }
         @media (max-width: 480px) {
             .feedback-button {
                 font-size: 40px;
-                width: 60px;
-                height: 60px;
-                margin: 2px;
+                width: 65px;
+                padding: 10px 2px;
             }
             h1 {
                 font-size: 20px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+        }
+        
+        /* Medium-sized devices (tablets) */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .container {
+                padding: 30px;
+                max-width: 600px;
+            }
+            .feedback-button {
+                width: 85px;
+                font-size: 45px;
+            }
+        }
+        
+        /* Larger devices */
+        @media (min-width: 769px) {
+            .container {
+                padding: 40px;
+                max-width: 700px;
+            }
+            .feedback-button {
+                width: 90px;
+                font-size: 50px;
+            }
+            h1 {
+                font-size: 28px;
             }
         }
     </style>
@@ -206,85 +240,85 @@
     <button id="settingsBtn" class="settings-button">⚙️</button>
     
     <div class="container">
-        <img id="companyLogo" src="" alt="Company Logo" class="company-logo">
-        <h1 id="feedbackTitle">ประเมินความพึงพอใจในการให้บริการ</h1>
+        <img id="companyLogo" src="" alt="โลโก้บริษัท" class="company-logo">
+        <h1 id="feedbackTitle">กรุณาประเมินความพึงพอใจในการให้บริการของเรา</h1>
         
         <div class="feedback-options">
             <button class="feedback-button" data-rating="very_unhappy" data-score="1">😞
-                <span class="emoji-label">Very Unhappy</span>
+                <span class="emoji-label">ไม่พอใจมาก</span>
                 <span class="rating-value">1</span>
             </button>
             <button class="feedback-button" data-rating="unhappy" data-score="2">😕
-                <span class="emoji-label">Unhappy</span>
+                <span class="emoji-label">ไม่พอใจ</span>
                 <span class="rating-value">2</span>
             </button>
             <button class="feedback-button" data-rating="neutral" data-score="3">😐
-                <span class="emoji-label">Neutral</span>
+                <span class="emoji-label">ปานกลาง</span>
                 <span class="rating-value">3</span>
             </button>
             <button class="feedback-button" data-rating="happy" data-score="4">🙂
-                <span class="emoji-label">Happy</span>
+                <span class="emoji-label">พอใจ</span>
                 <span class="rating-value">4</span>
             </button>
             <button class="feedback-button" data-rating="very_happy" data-score="5">😊
-                <span class="emoji-label">Very Happy</span>
+                <span class="emoji-label">พอใจมาก</span>
                 <span class="rating-value">5</span>
             </button>
         </div>
         
         <select id="locationSelector" class="location-selector">
-            <option value="">Select Location</option>
+            <option value="">เลือกสาขา</option>
         </select>
         
-        <div id="thankYouMessage" class="thank-you">Thank you for your feedback!</div>
+        <div id="thankYouMessage" class="thank-you">ขอบคุณสำหรับการประเมิน!</div>
         <div id="spinner" class="spinner"></div>
         <div id="errorMessage" class="error-message"></div>
     </div>
     
     <div id="settingsPanel" class="settings-panel">
         <button id="closeSettings" class="close-settings">✕</button>
-        <h2>Settings</h2>
+        <h2>ตั้งค่าระบบ</h2>
         
         <div class="settings-section">
-            <h3>Google Sheets Integration</h3>
+            <h3>การเชื่อมต่อ Google Sheets</h3>
             <input type="text" id="apiUrl" class="settings-input" placeholder="Google Apps Script Web App URL">
             <p style="font-size: 12px; color: #666;">
-                Your Google Apps Script web app is configured
+                การเชื่อมต่อ Google Sheets ได้ถูกตั้งค่าแล้ว
             </p>
         </div>
         
         <div class="settings-section">
-            <h3>Customization</h3>
-            <input type="text" id="titleText" class="settings-input" placeholder="Feedback Question">
-            <input type="text" id="logoUrl" class="settings-input" placeholder="Logo URL">
-            <input type="text" id="thankYouText" class="settings-input" placeholder="Thank You Message">
+            <h3>การปรับแต่ง</h3>
+            <input type="text" id="titleText" class="settings-input" placeholder="คำถามประเมิน">
+            <input type="text" id="logoUrl" class="settings-input" placeholder="URL โลโก้">
+            <input type="text" id="thankYouText" class="settings-input" placeholder="ข้อความขอบคุณ">
         </div>
         
         <div class="settings-section">
-            <h3>Locations</h3>
+            <h3>สาขา</h3>
             <div>
-                <input type="text" id="newLocation" class="settings-input" placeholder="Add new location">
-                <button id="addLocationBtn" class="settings-btn">Add</button>
+                <input type="text" id="newLocation" class="settings-input" placeholder="เพิ่มสาขาใหม่">
+                <button id="addLocationBtn" class="settings-btn">เพิ่ม</button>
             </div>
             <ul id="locationList" class="location-list"></ul>
             <p style="font-size: 12px; color: #666;">
-                Note: Location changes are saved on this device only. To make locations consistent across all devices, edit the HTML file.
+                หมายเหตุ: การเปลี่ยนแปลงรายชื่อสาขาจะถูกบันทึกไว้เฉพาะบนอุปกรณ์นี้เท่านั้น หากต้องการให้แสดงเหมือนกันทุกอุปกรณ์ กรุณาแก้ไขไฟล์ HTML
             </p>
         </div>
         
         <div class="settings-section">
-            <h3>Data Sync Interval</h3>
+            <h3>การซิงค์ข้อมูล</h3>
             <select id="syncInterval" class="settings-input">
-                <option value="realtime">Real-time</option>
-                <option value="5min">Every 5 minutes</option>
-                <option value="15min">Every 15 minutes</option>
-                <option value="hourly">Hourly</option>
+                <option value="realtime">ทันที (Real-time)</option>
+                <option value="5min">ทุก 5 นาที</option>
+                <option value="15min">ทุก 15 นาที</option>
+                <option value="hourly">ทุกชั่วโมง</option>
             </select>
         </div>
         
         <div class="settings-section">
-            <button id="saveSettingsBtn" class="settings-btn">Save Settings</button>
-            <button id="cancelSettingsBtn" class="settings-btn cancel">Cancel</button>
+            <button id="saveSettingsBtn" class="settings-btn">บันทึก</button>
+            <button id="cancelSettingsBtn" class="settings-btn cancel">ยกเลิก</button>
         </div>
     </div>
 
@@ -292,9 +326,9 @@
         // Settings and state management with pre-configured values
         let settings = {
             apiUrl: 'https://script.google.com/macros/s/AKfycbz-OwX9jx6sBLqMtZ2sWDiJG_tc-HGH7kBXC9_ZD-mZHJkfFONRSk4_oKe0mBapG1lA/exec',
-            feedbackTitle: 'ประเมินความพึงพอใจในการให้บริการ',
+            feedbackTitle: 'กรุณาประเมินความพึงพอใจในการให้บริการของเรา',
             logoUrl: '',
-            thankYouText: 'Thank you for your feedback!',
+            thankYouText: 'ขอบคุณสำหรับการประเมิน!',
             locations: ['Flagship'],
             syncInterval: 'realtime'
         };
@@ -311,9 +345,9 @@
             
             // Update UI with settings
             document.getElementById('apiUrl').value = settings.apiUrl || '';
-            document.getElementById('titleText').value = settings.feedbackTitle || 'ประเมินความพึงพอใจในการให้บริการ';
+            document.getElementById('titleText').value = settings.feedbackTitle || 'กรุณาประเมินความพึงพอใจในการให้บริการของเรา';
             document.getElementById('logoUrl').value = settings.logoUrl || '';
-            document.getElementById('thankYouText').value = settings.thankYouText || 'Thank you for your feedback!';
+            document.getElementById('thankYouText').value = settings.thankYouText || 'ขอบคุณสำหรับการประเมิน!';
             document.getElementById('syncInterval').value = settings.syncInterval || 'realtime';
             
             // Update visible elements
@@ -347,9 +381,9 @@
         // Save settings to localStorage
         function saveSettings() {
             settings.apiUrl = document.getElementById('apiUrl').value;
-            settings.feedbackTitle = document.getElementById('titleText').value || 'ประเมินความพึงพอใจในการให้บริการ';
+            settings.feedbackTitle = document.getElementById('titleText').value || 'กรุณาประเมินความพึงพอใจในการให้บริการของเรา';
             settings.logoUrl = document.getElementById('logoUrl').value;
-            settings.thankYouText = document.getElementById('thankYouText').value || 'Thank you for your feedback!';
+            settings.thankYouText = document.getElementById('thankYouText').value || 'ขอบคุณสำหรับการประเมิน!';
             settings.syncInterval = document.getElementById('syncInterval').value;
             
             localStorage.setItem('feedbackSettings', JSON.stringify(settings));
@@ -373,7 +407,7 @@
         // Populate the location dropdown
         function populateLocationDropdown() {
             const locationSelector = document.getElementById('locationSelector');
-            locationSelector.innerHTML = '<option value="">Select Location</option>';
+            locationSelector.innerHTML = '<option value="">เลือกสาขา</option>';
             
             settings.locations.forEach(location => {
                 const option = document.createElement('option');
@@ -450,7 +484,7 @@
                 const location = locationSelector.value;
                 
                 if (!location) {
-                    showError('Please select a location before submitting feedback.');
+                    showError('กรุณาเลือกสาขาก่อนทำการประเมิน');
                     return;
                 }
                 
@@ -478,11 +512,27 @@
             
             // Prepare data
             const timestamp = new Date().toISOString();
+            // Create localized date and time for Thailand
+            const thaiDate = new Date(timestamp).toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                timeZone: 'Asia/Bangkok'
+            });
+            const thaiTime = new Date(timestamp).toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZone: 'Asia/Bangkok'
+            });
+            
             const feedbackData = {
                 timestamp: timestamp,
                 rating: rating,
                 score: score,
-                location: location
+                location: location,
+                thaiDate: thaiDate,
+                thaiTime: thaiTime
             };
             
             // Based on sync interval, handle differently
