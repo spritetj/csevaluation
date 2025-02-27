@@ -95,7 +95,6 @@
             font-size: 28px;
             color: #4CAF50;
             margin: 20px 0;
-            display: none;
         }
         .location-selector {
             margin-bottom: 20px;
@@ -677,6 +676,9 @@
         function showThankYouScreen() {
             document.getElementById('spinner').style.display = 'none';
             showScreen('thankYouScreen');
+            
+            // Make sure thank you message is visible
+            document.getElementById('thankYouMessage').style.display = 'block';
             
             // Reset after 3 seconds
             setTimeout(() => {
