@@ -41,22 +41,24 @@
             display: flex;
             justify-content: space-around;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
         .feedback-button {
             background: none;
             border: none;
             cursor: pointer;
             transition: transform 0.2s;
-            font-size: 60px;
-            padding: 15px;
+            font-size: 50px;
+            padding: 10px;
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             -webkit-tap-highlight-color: transparent;
+            margin: 5px;
         }
         .feedback-button:hover, .feedback-button:focus {
             transform: scale(1.1);
@@ -98,7 +100,7 @@
         .settings-panel {
             position: fixed;
             top: 0;
-            right: -300px;
+            right: -350px; /* Increased to ensure it's fully off-screen */
             width: 300px;
             height: 100%;
             background-color: white;
@@ -182,11 +184,17 @@
             margin: 10px 0;
             display: none;
         }
+        .rating-value {
+            font-weight: bold;
+            margin-top: 3px;
+            font-size: 16px;
+        }
         @media (max-width: 480px) {
             .feedback-button {
-                font-size: 50px;
-                width: 70px;
-                height: 70px;
+                font-size: 40px;
+                width: 60px;
+                height: 60px;
+                margin: 2px;
             }
             h1 {
                 font-size: 20px;
@@ -199,17 +207,28 @@
     
     <div class="container">
         <img id="companyLogo" src="" alt="Company Logo" class="company-logo">
-        <h1 id="feedbackTitle">How would you rate our service?</h1>
+        <h1 id="feedbackTitle">ประเมินความพึงพอใจในการให้บริการ</h1>
         
         <div class="feedback-options">
-            <button class="feedback-button" data-rating="unhappy">😞
+            <button class="feedback-button" data-rating="very_unhappy" data-score="1">😞
+                <span class="emoji-label">Very Unhappy</span>
+                <span class="rating-value">1</span>
+            </button>
+            <button class="feedback-button" data-rating="unhappy" data-score="2">😕
                 <span class="emoji-label">Unhappy</span>
+                <span class="rating-value">2</span>
             </button>
-            <button class="feedback-button" data-rating="neutral">😐
+            <button class="feedback-button" data-rating="neutral" data-score="3">😐
                 <span class="emoji-label">Neutral</span>
+                <span class="rating-value">3</span>
             </button>
-            <button class="feedback-button" data-rating="happy">😊
+            <button class="feedback-button" data-rating="happy" data-score="4">🙂
                 <span class="emoji-label">Happy</span>
+                <span class="rating-value">4</span>
+            </button>
+            <button class="feedback-button" data-rating="very_happy" data-score="5">😊
+                <span class="emoji-label">Very Happy</span>
+                <span class="rating-value">5</span>
             </button>
         </div>
         
@@ -248,6 +267,9 @@
                 <button id="addLocationBtn" class="settings-btn">Add</button>
             </div>
             <ul id="locationList" class="location-list"></ul>
+            <p style="font-size: 12px; color: #666;">
+                Note: Location changes are saved on this device only. To make locations consistent across all devices, edit the HTML file.
+            </p>
         </div>
         
         <div class="settings-section">
@@ -270,7 +292,7 @@
         // Settings and state management with pre-configured values
         let settings = {
             apiUrl: 'https://script.google.com/macros/s/AKfycbz-OwX9jx6sBLqMtZ2sWDiJG_tc-HGH7kBXC9_ZD-mZHJkfFONRSk4_oKe0mBapG1lA/exec',
-            feedbackTitle: 'How would you rate our service?',
+            feedbackTitle: 'ประเมินความพึงพอใจในการให้บริการ',
             logoUrl: '',
             thankYouText: 'Thank you for your feedback!',
             locations: ['Flagship'],
@@ -289,7 +311,7 @@
             
             // Update UI with settings
             document.getElementById('apiUrl').value = settings.apiUrl || '';
-            document.getElementById('titleText').value = settings.feedbackTitle || 'How would you rate our service?';
+            document.getElementById('titleText').value = settings.feedbackTitle || 'ประเมินความพึงพอใจในการให้บริการ';
             document.getElementById('logoUrl').value = settings.logoUrl || '';
             document.getElementById('thankYouText').value = settings.thankYouText || 'Thank you for your feedback!';
             document.getElementById('syncInterval').value = settings.syncInterval || 'realtime';
@@ -325,7 +347,7 @@
         // Save settings to localStorage
         function saveSettings() {
             settings.apiUrl = document.getElementById('apiUrl').value;
-            settings.feedbackTitle = document.getElementById('titleText').value || 'How would you rate our service?';
+            settings.feedbackTitle = document.getElementById('titleText').value || 'ประเมินความพึงพอใจในการให้บริการ';
             settings.logoUrl = document.getElementById('logoUrl').value;
             settings.thankYouText = document.getElementById('thankYouText').value || 'Thank you for your feedback!';
             settings.syncInterval = document.getElementById('syncInterval').value;
@@ -423,6 +445,7 @@
         feedbackButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const rating = this.getAttribute('data-rating');
+                const score = parseInt(this.getAttribute('data-score'));
                 const locationSelector = document.getElementById('locationSelector');
                 const location = locationSelector.value;
                 
@@ -431,7 +454,7 @@
                     return;
                 }
                 
-                submitFeedback(rating, location);
+                submitFeedback(rating, score, location);
             });
         });
 
@@ -447,7 +470,7 @@
         }
 
         // Submit feedback
-        function submitFeedback(rating, location) {
+        function submitFeedback(rating, score, location) {
             // Display spinner and hide options
             document.getElementById('spinner').style.display = 'block';
             document.querySelector('.feedback-options').style.display = 'none';
@@ -458,6 +481,7 @@
             const feedbackData = {
                 timestamp: timestamp,
                 rating: rating,
+                score: score,
                 location: location
             };
             
