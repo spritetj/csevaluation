@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ระบบประเมินความพึงพอใจ</title>
+    <style>
+        body {
+            font-family: 'Sukhumvit Set', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            padding: 30px 20px;
+            margin: 20px;
+        }
+        .company-logo {
+            margin: 0 auto 20px auto; /* Center the logo */
+            max-width: 200px;
+            max-height: 100px;
+            object-fit: contain;
+            display: block; /* Important for centering */
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .feedback-options {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .feedback-button, .improvement-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-size: 50px;
+            padding: 15px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            margin: 5px;
+            width: 80px;
+        }
+        .improvement-button {
+            font-size: 24px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px 10px;
+            width: 100px;
+            height: 100px;
+        }
+        .improvement-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .feedback-button:hover, .feedback-button:focus, 
+        .improvement-button:hover, .improvement-button:focus {
+            transform: scale(1.1);
+            outline: none;
+        }
+        .emoji-label {
+            display: block;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+        .rating-value {
+            font-weight: bold;
+            margin-top: 3px;
+            font-size: 18px;
+            color: #333;
+        }
+        .thank-you {
+            font-size: 28px;
+            color: #4CAF50;
+            margin: 20px 0;
+            display: none;
+        }
+        .location-selector {
+            margin-bottom: 20px;
+            padding: 12px;
+            width: 90%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            -webkit-appearance: none;
+            background-color: #fff;
+            text-align: center;
+            font-family: 'Sukhumvit Set', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .settings-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 10px;
+            z-index: 100;
+        }
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s;
+            padding: 20px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .settings-panel.open {
+            right: 0;
+        }
+        .close-settings {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .settings-section {
+            margin-bottom: 20px;
+        }
+        .settings-section h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .settings-input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .settings-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .settings-btn.cancel {
+            background-color: #f44336;
+        }
+        .location-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        .location-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .delete-location {
+            color: #f44336;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4CAF50;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #f44336;
+            margin: 10px 0;
+            display: none;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        @media (max-width: 480px) {
+            .feedback-button {
+                font-size: 40px;
+                width: 65px;
+                padding: 10px 2px;
+            }
+            .improvement-button {
+                font-size: 18px;
+                width: 80px;
+                height: 80px;
+            }
+            .improvement-icon {
+                font-size: 30px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+        }
+        
+        /* Medium-sized devices (tablets) */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .container {
+                padding: 30px;
+                max-width: 600px;
+            }
+            .feedback-button {
+                width: 85px;
+                font-size: 45px;
+            }
+        }
+        
+        /* Larger devices */
+        @media (min-width: 769px) {
+            .container {
+                padding: 40px;
+                max-width: 700px;
+            }
+            .feedback-button {
+                width: 90px;
+                font-size: 50px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="settingsBtn" class="settings-button">⚙️</button>
+    
+    <div class="container">
+        <!-- Rating Screen -->
+        <div id="ratingScreen" class="screen active">
+            <img id="companyLogo" src="" alt="โลโก้บริษัท" class="company-logo">
+            <h1 id="feedbackTitle">กรุณาประเมินความพึงพอใจในการให้บริการของเรา</h1>
+            
+            <div class="feedback-options">
+                <button class="feedback-button" data-rating="very_unhappy" data-score="1">😞
+                    <span class="emoji-label">ไม่พอใจมาก</span>
+                    <span class="rating-value">1</span>
+                </button>
+                <button class="feedback-button" data-rating="unhappy" data-score="2">😕
+                    <span class="emoji-label">ไม่พอใจ</span>
+                    <span class="rating-value">2</span>
+                </button>
+                <button class="feedback-button" data-rating="neutral" data-score="3">😐
+                    <span class="emoji-label">ปานกลาง</span>
+                    <span class="rating-value">3</span>
+                </button>
+                <button class="feedback-button" data-rating="happy" data-score="4">🙂
+                    <span class="emoji-label">พอใจ</span>
+                    <span class="rating-value">4</span>
+                </button>
+                <button class="feedback-button" data-rating="very_happy" data-score="5">😊
+                    <span class="emoji-label">พอใจมาก</span>
+                    <span class="rating-value">5</span>
+                </button>
+            </div>
+            
+            <select id="locationSelector" class="location-selector">
+                <option value="">เลือกสาขา</option>
+            </select>
+        </div>
+        
+        <!-- Improvement Screen -->
+        <div id="improvementScreen" class="screen">
+            <img id="companyLogoImprovement" src="" alt="โลโก้บริษัท" class="company-logo">
+            <h1>กรุณาเลือกที่แนะนำให้ HAAB พัฒนาเพิ่ม</h1>
+            
+            <div class="feedback-options">
+                <button class="improvement-button" data-improvement="service">
+                    <span class="improvement-icon">🛎️</span>
+                    <span class="emoji-label">การให้บริการ</span>
+                </button>
+                <button class="improvement-button" data-improvement="staff">
+                    <span class="improvement-icon">👨‍💼</span>
+                    <span class="emoji-label">พนักงาน</span>
+                </button>
+                <button class="improvement-button" data-improvement="cleanliness">
+                    <span class="improvement-icon">✨</span>
+                    <span class="emoji-label">ความสะอาด</span>
+                </button>
+                <button class="improvement-button" data-improvement="other">
+                    <span class="improvement-icon">📝</span>
+                    <span class="emoji-label">อื่นๆ</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Thank You Screen -->
+        <div id="thankYouScreen" class="screen">
+            <img id="companyLogoThankYou" src="" alt="โลโก้บริษัท" class="company-logo">
+            <div id="thankYouMessage" class="thank-you">ขอบคุณสำหรับการประเมิน!</div>
+        </div>
+        
+        <div id="spinner" class="spinner"></div>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+    
+    <div id="settingsPanel" class="settings-panel">
+        <button id="closeSettings" class="close-settings">✕</button>
+        <h2>ตั้งค่าระบบ</h2>
+        
+        <div class="settings-section">
+            <h3>การเชื่อมต่อ Google Sheets</h3>
+            <input type="text" id="apiUrl" class="settings-input" placeholder="Google Apps Script Web App URL">
+            <p style="font-size: 12px; color: #666;">
+                การเชื่อมต่อ Google Sheets ได้ถูกตั้งค่าแล้ว
+            </p>
+        </div>
+        
+        <div class="settings-section">
+            <h3>การปรับแต่ง</h3>
+            <input type="text" id="titleText" class="settings-input" placeholder="คำถามประเมิน">
+            <input type="text" id="logoUrl" class="settings-input" placeholder="URL โลโก้">
+            <input type="text" id="thankYouText" class="settings-input" placeholder="ข้อความขอบคุณ">
+        </div>
+        
+        <div class="settings-section">
+            <h3>สาขา</h3>
+            <div>
+                <input type="text" id="newLocation" class="settings-input" placeholder="เพิ่มสาขาใหม่">
+                <button id="addLocationBtn" class="settings-btn">เพิ่ม</button>
+            </div>
+            <ul id="locationList" class="location-list"></ul>
+            <p style="font-size: 12px; color: #666;">
+                หมายเหตุ: การเปลี่ยนแปลงรายชื่อสาขาจะถูกบันทึกไว้เฉพาะบนอุปกรณ์นี้เท่านั้น หากต้องการให้แสดงเหมือนกันทุกอุปกรณ์ กรุณาแก้ไขไฟล์ HTML
+            </p>
+        </div>
+        
+        <div class="settings-section">
+            <h3>การซิงค์ข้อมูล</h3>
+            <select id="syncInterval" class="settings-input">
+                <option value="realtime">ทันที (Real-time)</option>
+                <option value="5min">ทุก 5 นาที</option>
+                <option value="15min">ทุก 15 นาที</option>
+                <option value="hourly">ทุกชั่วโมง</option>
+            </select>
+        </div>
+        
+        <div class="settings-section">
+            <button id="saveSettingsBtn" class="settings-btn">บันทึก</button>
+            <button id="cancelSettingsBtn" class="settings-btn cancel">ยกเลิก</button>
+        </div>
+    </div>
+
+    <script>
+        // Settings and state management with pre-configured values
+        let settings = {
+            apiUrl: 'https://script.google.com/macros/s/AKfycbz-OwX9jx6sBLqMtZ2sWDiJG_tc-HGH7kBXC9_ZD-mZHJkfFONRSk4_oKe0mBapG1lA/exec',
+            feedbackTitle: 'กรุณาประเมินความพึงพอใจในการให้บริการของเรา',
+            logoUrl: '',
+            thankYouText: 'ขอบคุณสำหรับการประเมิน!',
+            locations: ['Flagship'],
+            syncInterval: 'realtime'
+        };
+
+        // State variables
+        let currentRating = null;
+        let currentScore = null;
+        let currentImprovement = null;
+
+        // Queue for storing feedback when offline or delayed sync
+        let feedbackQueue = [];
+
+        // Initialize from localStorage if available
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('feedbackSettings');
+            if (savedSettings) {
+                settings = JSON.parse(savedSettings);
+            }
+            
+            // Update UI with settings
+            document.getElementById('apiUrl').value = settings.apiUrl || '';
+            document.getElementById('titleText').value = settings.feedbackTitle || 'กรุณาประเมินความพึงพอใจในการให้บริการของเรา';
+            document.getElementById('logoUrl').value = settings.logoUrl || '';
+            document.getElementById('thankYouText').value = settings.thankYouText || 'ขอบคุณสำหรับการประเมิน!';
+            document.getElementById('syncInterval').value = settings.syncInterval || 'realtime';
+            
+            // Update visible elements
+            document.getElementById('feedbackTitle').textContent = settings.feedbackTitle;
+            document.getElementById('thankYouMessage').textContent = settings.thankYouText;
+            
+            // Update all logo instances
+            const logoUrls = [
+                document.getElementById('companyLogo'), 
+                document.getElementById('companyLogoImprovement'),
+                document.getElementById('companyLogoThankYou')
+            ];
+            
+            logoUrls.forEach(logoElement => {
+                if (settings.logoUrl) {
+                    logoElement.src = settings.logoUrl;
+                    logoElement.style.display = 'block';
+                } else {
+                    logoElement.style.display = 'none';
+                }
+            });
+            
+            // Populate location dropdown
+            populateLocationDropdown();
+            updateLocationsList();
+
+            // Load feedback queue
+            const savedQueue = localStorage.getItem('feedbackQueue');
+            if (savedQueue) {
+                feedbackQueue = JSON.parse(savedQueue);
+                
+                // Process queue if there are items
+                if (feedbackQueue.length > 0 && settings.apiUrl) {
+                    processFeedbackQueue();
+                }
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            settings.apiUrl = document.getElementById('apiUrl').value;
+            settings.feedbackTitle = document.getElementById('titleText').value || 'กรุณาประเมินความพึงพอใจในการให้บริการของเรา';
+            settings.logoUrl = document.getElementById('logoUrl').value;
+            settings.thankYouText = document.getElementById('thankYouText').value || 'ขอบคุณสำหรับการประเมิน!';
+            settings.syncInterval = document.getElementById('syncInterval').value;
+            
+            localStorage.setItem('feedbackSettings', JSON.stringify(settings));
+            
+            // Update visible elements
+            document.getElementById('feedbackTitle').textContent = settings.feedbackTitle;
+            document.getElementById('thankYouMessage').textContent = settings.thankYouText;
+            
+            // Update all logo instances
+            const logoUrls = [
+                document.getElementById('companyLogo'), 
+                document.getElementById('companyLogoImprovement'),
+                document.getElementById('companyLogoThankYou')
+            ];
+            
+            logoUrls.forEach(logoElement => {
+                if (settings.logoUrl) {
+                    logoElement.src = settings.logoUrl;
+                    logoElement.style.display = 'block';
+                } else {
+                    logoElement.style.display = 'none';
+                }
+            });
+            
+            populateLocationDropdown();
+            closeSettingsPanel();
+        }
+
+        // Switch between screens
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show the requested screen
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Populate the location dropdown
+        function populateLocationDropdown() {
+            const locationSelector = document.getElementById('locationSelector');
+            locationSelector.innerHTML = '<option value="">เลือกสาขา</option>';
+            
+            settings.locations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationSelector.appendChild(option);
+            });
+            
+            // Auto-select first location if there's only one
+            if (settings.locations.length === 1) {
+                locationSelector.value = settings.locations[0];
+            }
+        }
+
+        // Update the locations list in settings
+        function updateLocationsList() {
+            const locationList = document.getElementById('locationList');
+            locationList.innerHTML = '';
+            
+            settings.locations.forEach(location => {
+                const li = document.createElement('li');
+                li.className = 'location-item';
+                li.innerHTML = `
+                    <span>${location}</span>
+                    <button class="delete-location" data-location="${location}">✕</button>
+                `;
+                locationList.appendChild(li);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-location').forEach(button => {
+                button.addEventListener('click', function() {
+                    const locationToDelete = this.getAttribute('data-location');
+                    settings.locations = settings.locations.filter(loc => loc !== locationToDelete);
+                    updateLocationsList();
+                });
+            });
+        }
+
+        // Settings panel toggle
+        document.getElementById('settingsBtn').addEventListener('click', function() {
+            document.getElementById('settingsPanel').classList.add('open');
+        });
+
+        document.getElementById('closeSettings').addEventListener('click', closeSettingsPanel);
+        document.getElementById('cancelSettingsBtn').addEventListener('click', closeSettingsPanel);
+
+        function closeSettingsPanel() {
+            document.getElementById('settingsPanel').classList.remove('open');
+            // Reload settings to discard unsaved changes
+            loadSettings();
+        }
+
+        // Save settings
+        document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+
+        // Add new location
+        document.getElementById('addLocationBtn').addEventListener('click', function() {
+            const newLocation = document.getElementById('newLocation').value.trim();
+            if (newLocation && !settings.locations.includes(newLocation)) {
+                settings.locations.push(newLocation);
+                document.getElementById('newLocation').value = '';
+                updateLocationsList();
+            }
+        });
+
+        // Handle feedback submission
+        const feedbackButtons = document.querySelectorAll('.feedback-button');
+        feedbackButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const rating = this.getAttribute('data-rating');
+                const score = parseInt(this.getAttribute('data-score'));
+                const locationSelector = document.getElementById('locationSelector');
+                const location = locationSelector.value;
+                
+                if (!location) {
+                    showError('กรุณาเลือกสาขาก่อนทำการประเมิน');
+                    return;
+                }
+                
+                // Save current rating data
+                currentRating = rating;
+                currentScore = score;
+                
+                // For low scores (1-2), show improvement screen
+                if (score <= 2) {
+                    showScreen('improvementScreen');
+                } else {
+                    // For higher scores, submit directly
+                    submitFeedback(rating, score, location, null);
+                }
+            });
+        });
+
+        // Handle improvement selection
+        const improvementButtons = document.querySelectorAll('.improvement-button');
+        improvementButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const improvement = this.getAttribute('data-improvement');
+                const locationSelector = document.getElementById('locationSelector');
+                const location = locationSelector.value;
+                
+                // Submit feedback with improvement data
+                submitFeedback(currentRating, currentScore, location, improvement);
+            });
+        });
+
+        // Show error message
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // Submit feedback
+        function submitFeedback(rating, score, location, improvement) {
+            // Display spinner
+            document.getElementById('spinner').style.display = 'block';
+            
+            // Prepare data
+            const timestamp = new Date().toISOString();
+            // Create localized date and time for Thailand
+            const thaiDate = new Date(timestamp).toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                timeZone: 'Asia/Bangkok'
+            });
+            const thaiTime = new Date(timestamp).toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZone: 'Asia/Bangkok'
+            });
+            
+            const feedbackData = {
+                timestamp: timestamp,
+                rating: rating,
+                score: score,
+                location: location,
+                improvement: improvement,
+                thaiDate: thaiDate,
+                thaiTime: thaiTime
+            };
+            
+            // Based on sync interval, handle differently
+            if (settings.syncInterval === 'realtime' && settings.apiUrl) {
+                // Send immediately to Google Sheets
+                sendToGoogleSheets(feedbackData)
+                    .then(success => {
+                        if (!success) {
+                            // If failed, add to queue
+                            addToFeedbackQueue(feedbackData);
+                        }
+                        showThankYouScreen();
+                    })
+                    .catch(error => {
+                        console.error('Error submitting feedback:', error);
+                        addToFeedbackQueue(feedbackData);
+                        showThankYouScreen();
+                    });
+            } else {
+                // Add to queue for later sync
+                addToFeedbackQueue(feedbackData);
+                showThankYouScreen();
+            }
+        }
+
+        // Show thank you screen
+        function showThankYouScreen() {
+            document.getElementById('spinner').style.display = 'none';
+            showScreen('thankYouScreen');
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                showScreen('ratingScreen');
+                // Reset state variables
+                currentRating = null;
+                currentScore = null;
+                currentImprovement = null;
+            }, 3000);
+        }
+
+        // Add feedback to queue and save to localStorage
+        function addToFeedbackQueue(feedbackData) {
+            feedbackQueue.push(feedbackData);
+            localStorage.setItem('feedbackQueue', JSON.stringify(feedbackQueue));
+            
+            // Set up queue processing based on sync interval
+            setupQueueProcessing();
+        }
+
+        // Setup queue processing based on sync interval
+        function setupQueueProcessing() {
+            if (feedbackQueue.length === 0 || !settings.apiUrl) {
+                return;
+            }
+            
+            // Clear any existing interval
+            if (window.queueInterval) {
+                clearInterval(window.queueInterval);
+            }
+            
+            let intervalTime;
+            
+            switch (settings.syncInterval) {
+                case '5min':
+                    intervalTime = 5 * 60 * 1000;
+                    break;
+                case '15min':
+                    intervalTime = 15 * 60 * 1000;
+                    break;
+                case 'hourly':
+                    intervalTime = 60 * 60 * 1000;
+                    break;
+                default:
+                    // Process immediately for realtime
+                    processFeedbackQueue();
+                    return;
+            }
+            
+            // Set interval for processing queue
+            window.queueInterval = setInterval(processFeedbackQueue, intervalTime);
+        }
+
+        // Process the feedback queue
+        function processFeedbackQueue() {
+            if (feedbackQueue.length === 0 || !settings.apiUrl) {
+                return;
+            }
+            
+            console.log(`Processing ${feedbackQueue.length} feedback items...`);
+            
+            // Process one item at a time to avoid overwhelming the API
+            const processNext = () => {
+                if (feedbackQueue.length === 0) {
+                    return;
+                }
+                
+                const item = feedbackQueue[0];
+                
+                sendToGoogleSheets(item)
+                    .then(success => {
+                        if (success) {
+                            // Remove from queue if successful
+                            feedbackQueue.shift();
+                            localStorage.setItem('feedbackQueue', JSON.stringify(feedbackQueue));
+                            
+                            // Process next item if queue not empty
+                            if (feedbackQueue.length > 0) {
+                                setTimeout(processNext, 1000); // Add delay to avoid rate limits
+                            }
+                        } else {
+                            // Stop processing if there's an error
+                            console.error('Error submitting feedback, will retry later');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error processing queue:', error);
+                    });
+            };
+            
+            processNext();
+        }
+
+        // Send feedback to Google Sheets
+        async function sendToGoogleSheets(data) {
+            if (!settings.apiUrl) {
+                return false;
+            }
+            
+            try {
+                const response = await fetch(settings.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                    mode: 'no-cors' // This helps with CORS issues on mobile
+                });
+                
+                // With no-cors mode, we can't check response status
+                // We'll assume success but also rely on our queue mechanism as a fallback
+                return true;
+            } catch (error) {
+                console.error('Error sending to Google Sheets:', error);
+                return false;
+            }
+        }
+
+        // Check internet connection
+        function isOnline() {
+            return navigator.onLine;
+        }
+
+        // Event listener for online status
+        window.addEventListener('online', function() {
+            console.log('Device is online, processing feedback queue...');
+            processFeedbackQueue();
+        });
+
+        // Add TouchStart event listeners for better performance on mobile
+        feedbackButtons.forEach(button => {
+            button.addEventListener('touchstart', function(e) {
+                this.style.transform = 'scale(1.1)';
+            }, { passive: true });
+            
+            button.addEventListener('touchend', function(e) {
+                this.style.transform = 'scale(1.0)';
+            }, { passive: true });
+        });
+
+        improvementButtons.forEach(button => {
+            button.addEventListener('touchstart', function(e) {
+                this.style.transform = 'scale(1.1)';
+            }, { passive: true });
+            
+            button.addEventListener('touchend', function(e) {
+                this.style.transform = 'scale(1.0)';
+            }, { passive: true });
+        });
+
+        // Load settings on page load
+        window.addEventListener('DOMContentLoaded', loadSettings);
+
+        // Handle visibility change (tab becomes visible again)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && isOnline() && feedbackQueue.length > 0) {
+                processFeedbackQueue();
+            }
+        });
+    </script>
+</body>
+</html>
