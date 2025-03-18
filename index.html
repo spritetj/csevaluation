@@ -270,14 +270,44 @@
         }
         .spinner {
             border: 6px solid rgba(0, 0, 0, 0.1);
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            border-left-color: #4CAF50;
+            border-top-color: #4CAF50;
             animation: spin 1s linear infinite;
-            display: none;
             margin: 30px auto;
+            position: relative;
         }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+            font-weight: 500;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -370,6 +400,13 @@
         
         <div id="spinner" class="spinner"></div>
         <div id="errorMessage" class="error-message"></div>
+    </div>
+    
+    
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">กำลังประมวลผล...</div>
     </div>
     
     <div id="settingsPanel" class="settings-panel">
@@ -617,13 +654,24 @@
                     return;
                 }
                 
+                // Show immediate visual feedback that button was pressed
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+                
                 // Save current rating data
                 currentRating = rating;
                 currentScore = score;
                 
                 // For low scores (1-2), show improvement screen
                 if (score <= 2) {
-                    showScreen('improvementScreen');
+                    // Show loading briefly before switching screens
+                    document.getElementById('loadingOverlay').classList.add('active');
+                    setTimeout(() => {
+                        document.getElementById('loadingOverlay').classList.remove('active');
+                        showScreen('improvementScreen');
+                    }, 600);
                 } else {
                     // For higher scores, submit directly
                     submitFeedback(rating, score, location, null);
@@ -657,8 +705,8 @@
 
         // Submit feedback
         function submitFeedback(rating, score, location, improvement) {
-            // Display spinner
-            document.getElementById('spinner').style.display = 'block';
+            // Show loading overlay
+            document.getElementById('loadingOverlay').classList.add('active');
             
             // Prepare data
             const timestamp = new Date().toISOString();
@@ -695,17 +743,28 @@
                             // If failed, add to queue
                             addToFeedbackQueue(feedbackData);
                         }
-                        showThankYouScreen();
+                        // Add slight delay to make loading more visible
+                        setTimeout(() => {
+                            document.getElementById('loadingOverlay').classList.remove('active');
+                            showThankYouScreen();
+                        }, 800);
                     })
                     .catch(error => {
                         console.error('Error submitting feedback:', error);
                         addToFeedbackQueue(feedbackData);
-                        showThankYouScreen();
+                        setTimeout(() => {
+                            document.getElementById('loadingOverlay').classList.remove('active');
+                            showThankYouScreen();
+                        }, 800);
                     });
             } else {
                 // Add to queue for later sync
                 addToFeedbackQueue(feedbackData);
-                showThankYouScreen();
+                // Simulate processing time
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                    showThankYouScreen();
+                }, 800);
             }
         }
 
