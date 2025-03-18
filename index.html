@@ -63,20 +63,30 @@
             position: relative;
         }
         
-        /* Add a subtle separator line between emoji ratings */
-        .feedback-button::after {
-            content: '';
-            position: absolute;
-            right: -15px;
-            top: 40%;
-            height: 60px;
-            width: 1px;
-            background: #f0f0f0;
+        small {
             display: block;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: normal;
+            color: #666;
+            line-height: 1.3;
         }
         
-        .feedback-button:last-child::after {
-            display: none;
+        /* Specific styles for landscape mode */
+        @media (orientation: landscape) {
+            .feedback-options {
+                flex-direction: row;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .improvement-button {
+                flex: 0 0 auto;
+            }
+            
+            h1 {
+                margin-bottom: 30px;
+            }
         }
         .feedback-button {
             background: none;
@@ -94,19 +104,37 @@
             position: relative;
         }
         .improvement-button {
-            font-size: 26px;
+            font-size: 24px;
             background-color: #f9f9f9;
             border-radius: 20px;
             padding: 25px 15px;
-            width: 180px;
-            height: 180px;
+            width: 220px;
+            height: 240px;
             margin: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
             border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+        
+        .improvement-button:hover, .improvement-button:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+        }
+        
         .improvement-icon {
             font-size: 70px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .improvement-label {
+            text-align: center;
+            line-height: 1.4;
+            padding: 0 10px;
+            font-weight: 500;
         }
         .feedback-button:hover, .feedback-button:focus,
         .improvement-button:hover, .improvement-button:focus {
@@ -317,19 +345,19 @@
             <div class="feedback-options">
                 <button class="improvement-button" data-improvement="service">
                     <span class="improvement-icon">🛎️</span>
-                    <span class="emoji-label">ความสุภาพในการบริการ</span>
+                    <span class="improvement-label">ความสุภาพใน<br>การบริการ<br><small>บริการไม่สุภาพ ขาดความใส่ใจ</small></span>
                 </button>
                 <button class="improvement-button" data-improvement="staff">
                     <span class="improvement-icon">👨‍💼</span>
-                    <span class="emoji-label">คุณภาพพนักงาน</span>
+                    <span class="improvement-label">คุณภาพ<br>พนักงาน<br><small>พนักงานขาดทักษะ ไม่ให้คำแนะนำที่ดี</small></span>
+                </button>
+                <button class="improvement-button" data-improvement="knowledge">
+                    <span class="improvement-icon">✨</span>
+                    <span class="improvement-label">ความรู้ในสินค้า/<br>โปรโมชั่น<br><small>ไม่สามารถตอบคำถามเกี่ยวกับสินค้าได้</small></span>
                 </button>
                 <button class="improvement-button" data-improvement="cleanliness">
-                    <span class="improvement-icon">✨</span>
-                    <span class="emoji-label">ความรู้ในสินค้า/โปรโมชัน</span>
-                </button>
-                <button class="improvement-button" data-improvement="other">
                     <span class="improvement-icon">📝</span>
-                    <span class="emoji-label">ความสะอาดของสาขา</span>
+                    <span class="improvement-label">ความสะอาดของ<br>สาขา<br><small>พื้นที่ไม่สะอาด เก้าอี้และโต๊ะไม่เรียบร้อย</small></span>
                 </button>
             </div>
         </div>
@@ -393,10 +421,10 @@
 
     <script>
         // Settings and state management with pre-configured values
-        let settings = {
+        let         settings = {
             apiUrl: 'https://script.google.com/macros/s/AKfycbwF_So8APNxcWdI66w4eNYhsbhylyHSl7tp0n3j_RTntikNzAN03_JhsRaPoAJGHm0L/exec',
             feedbackTitle: 'กรุณาประเมินความพึงพอใจในการให้บริการของเรา',
-            logoUrl: 'https://scontent.fbkk18-2.fna.fbcdn.net/v/t39.30808-6/419537010_220523477795535_386266759560063604_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=2-MrHjYK048Q7kNvgGy6jBo&_nc_oc=AdjLgBKTIF-Bn1bHuRZ0kEI9uCKE7buVnrbJO6R7S3hdCf2D-V3a5DW_oZR4I_vntoA&_nc_zt=23&_nc_ht=scontent.fbkk18-2.fna&_nc_gid=A4HKZmGBKPDK6e4VFLj6JC0&oh=00_AYDuaCP4N-09fhB4YWnXRIYcjy1mko-5XZi84y9RtSwJQg&oe=67C5D20A',
+            logoUrl: 'https://drive.google.com/uc?export=view&id=1fhE8rws96cBCjGyIfePY38utUT_9Sczu',
             thankYouText: 'ขอบคุณสำหรับการประเมิน!',
             locations: ['บรรทัดทอง Flagship','ซอย จุฬา 14', 'One Bangkok', 'TEST'],
             syncInterval: 'realtime'
