@@ -20,89 +20,93 @@
         }
         .container {
             background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
             width: 90%;
-            max-width: 500px;
+            max-width: 960px;
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px;
             margin: 20px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .company-logo {
-            margin: 0 auto 20px auto; /* Center the logo */
-            max-width: 200px;
-            max-height: 100px;
+            margin: 0 auto 40px auto;
+            max-width: 240px;
+            max-height: 120px;
             object-fit: contain;
-            display: block; /* Important for centering */
+            display: block;
         }
         h1 {
             color: #333;
-            font-size: 24px;
-            margin-bottom: 30px;
+            font-size: 32px;
+            margin-bottom: 60px;
             font-weight: 600;
         }
         .feedback-options {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            justify-content: space-evenly;
+            margin-bottom: 60px;
+            flex-wrap: nowrap;
         }
-        .feedback-button, .improvement-button {
+        .feedback-button {
             background: none;
             border: none;
             cursor: pointer;
             transition: transform 0.2s;
-            font-size: 50px;
-            padding: 15px 5px;
+            font-size: 80px;
+            padding: 20px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             -webkit-tap-highlight-color: transparent;
-            margin: 5px;
-            width: 80px;
+            width: 140px;
         }
         .improvement-button {
-            font-size: 24px;
-            background-color: #f5f5f5;
-            border-radius: 10px;
-            padding: 15px 10px;
-            width: 100px;
-            height: 100px;
+            font-size: 28px;
+            background-color: #f8f8f8;
+            border-radius: 16px;
+            padding: 20px 15px;
+            width: 160px;
+            height: 160px;
+            margin: 10px;
         }
         .improvement-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 60px;
+            margin-bottom: 15px;
         }
-        .feedback-button:hover, .feedback-button:focus, 
+        .feedback-button:hover, .feedback-button:focus,
         .improvement-button:hover, .improvement-button:focus {
             transform: scale(1.1);
             outline: none;
         }
         .emoji-label {
             display: block;
-            margin-top: 8px;
-            font-size: 14px;
+            margin-top: 12px;
+            font-size: 20px;
             color: #555;
         }
         .rating-value {
             font-weight: bold;
-            margin-top: 3px;
-            font-size: 18px;
+            margin-top: 5px;
+            font-size: 24px;
             color: #333;
         }
         .thank-you {
-            font-size: 28px;
+            font-size: 42px;
             color: #4CAF50;
-            margin: 20px 0;
+            margin: 40px 0;
         }
         .location-selector {
-            margin-bottom: 20px;
-            padding: 12px;
-            width: 90%;
-            border-radius: 8px;
+            margin: 40px auto;
+            padding: 15px;
+            width: 70%;
+            border-radius: 12px;
             border: 1px solid #ddd;
-            font-size: 16px;
+            font-size: 20px;
             -webkit-appearance: none;
             background-color: #fff;
             text-align: center;
@@ -110,11 +114,11 @@
         }
         .settings-button {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 30px;
             cursor: pointer;
             color: #666;
             padding: 10px;
@@ -123,8 +127,8 @@
         .settings-panel {
             position: fixed;
             top: 0;
-            right: -350px;
-            width: 300px;
+            right: -400px;
+            width: 350px;
             height: 100%;
             background-color: white;
             box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -138,35 +142,38 @@
         }
         .close-settings {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
         }
         .settings-section {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .settings-section h3 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #333;
+            font-size: 20px;
         }
         .settings-input {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 16px;
         }
         .settings-btn {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            padding: 12px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-right: 10px;
+            margin-right: 15px;
+            font-size: 16px;
         }
         .settings-btn.cancel {
             background-color: #f44336;
@@ -174,29 +181,31 @@
         .location-list {
             list-style: none;
             padding: 0;
-            margin: 10px 0;
+            margin: 15px 0;
         }
         .location-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #eee;
+            font-size: 16px;
         }
         .delete-location {
             color: #f44336;
             background: none;
             border: none;
             cursor: pointer;
+            font-size: 18px;
         }
         .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
+            border: 6px solid rgba(0, 0, 0, 0.1);
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border-left-color: #4CAF50;
             animation: spin 1s linear infinite;
             display: none;
-            margin: 20px auto;
+            margin: 30px auto;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -204,62 +213,19 @@
         }
         .error-message {
             color: #f44336;
-            margin: 10px 0;
+            margin: 15px 0;
             display: none;
+            font-size: 18px;
         }
         .screen {
             display: none;
+            height: 100%;
         }
         .screen.active {
-            display: block;
-        }
-        @media (max-width: 480px) {
-            .feedback-button {
-                font-size: 40px;
-                width: 65px;
-                padding: 10px 2px;
-            }
-            .improvement-button {
-                font-size: 18px;
-                width: 80px;
-                height: 80px;
-            }
-            .improvement-icon {
-                font-size: 30px;
-            }
-            h1 {
-                font-size: 20px;
-            }
-            .container {
-                padding: 20px 15px;
-            }
-        }
-        
-        /* Medium-sized devices (tablets) */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .container {
-                padding: 30px;
-                max-width: 600px;
-            }
-            .feedback-button {
-                width: 85px;
-                font-size: 45px;
-            }
-        }
-        
-        /* Larger devices */
-        @media (min-width: 769px) {
-            .container {
-                padding: 40px;
-                max-width: 700px;
-            }
-            .feedback-button {
-                width: 90px;
-                font-size: 50px;
-            }
-            h1 {
-                font-size: 28px;
-            }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -342,7 +308,7 @@
         <div class="settings-section">
             <h3>การเชื่อมต่อ Google Sheets</h3>
             <input type="text" id="apiUrl" class="settings-input" placeholder="Google Apps Script Web App URL">
-            <p style="font-size: 12px; color: #666;">
+            <p style="font-size: 14px; color: #666;">
                 การเชื่อมต่อ Google Sheets ได้ถูกตั้งค่าแล้ว
             </p>
         </div>
@@ -361,7 +327,7 @@
                 <button id="addLocationBtn" class="settings-btn">เพิ่ม</button>
             </div>
             <ul id="locationList" class="location-list"></ul>
-            <p style="font-size: 12px; color: #666;">
+            <p style="font-size: 14px; color: #666;">
                 หมายเหตุ: การเปลี่ยนแปลงรายชื่อสาขาจะถูกบันทึกไว้เฉพาะบนอุปกรณ์นี้เท่านั้น หากต้องการให้แสดงเหมือนกันทุกอุปกรณ์ กรุณาแก้ไขไฟล์ HTML
             </p>
         </div>
@@ -811,10 +777,6 @@
         // Add TouchStart event listeners for better performance on mobile
         feedbackButtons.forEach(button => {
             button.addEventListener('touchstart', function(e) {
-                this.style.transform = 'scale(1.1)';
-            }, { passive: true });
-            
-            button.addEventListener('touchend', function(e) {
                 this.style.transform = 'scale(1.0)';
             }, { passive: true });
         });
@@ -829,8 +791,28 @@
             }, { passive: true });
         });
 
+        // Adjust container size for tablet orientation
+        function adjustForTablet() {
+            const container = document.querySelector('.container');
+            const isLandscape = window.innerWidth > window.innerHeight;
+            
+            if (isLandscape) {
+                container.style.height = '90vh';
+                container.style.maxWidth = '90%';
+            } else {
+                container.style.height = '80vh';
+                container.style.maxWidth = '960px';
+            }
+        }
+
+        // Listen for orientation changes
+        window.addEventListener('resize', adjustForTablet);
+
         // Load settings on page load
-        window.addEventListener('DOMContentLoaded', loadSettings);
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            adjustForTablet();
+        });
 
         // Handle visibility change (tab becomes visible again)
         document.addEventListener('visibilitychange', function() {
@@ -838,6 +820,29 @@
                 processFeedbackQueue();
             }
         });
+        
+        // Force fullscreen on tablets when possible
+        function enterFullscreen() {
+            const docEl = document.documentElement;
+            
+            if (docEl.requestFullscreen) {
+                docEl.requestFullscreen();
+            } else if (docEl.webkitRequestFullscreen) {
+                docEl.webkitRequestFullscreen();
+            } else if (docEl.msRequestFullscreen) {
+                docEl.msRequestFullscreen();
+            }
+        }
+        
+        // Try to enter fullscreen on first user interaction
+        document.addEventListener('click', function firstClick() {
+            enterFullscreen();
+            document.removeEventListener('click', firstClick);
+        }, { once: true });
     </script>
 </body>
-</html>
+</html>1.1)';
+            }, { passive: true });
+            
+            button.addEventListener('touchend', function(e) {
+                this.style.transform = 'scale(
