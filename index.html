@@ -268,44 +268,26 @@
             cursor: pointer;
             font-size: 18px;
         }
+        .spinner-container {
+            display: none;
+            margin: 20px auto;
+            text-align: center;
+        }
+        
         .spinner {
-            border: 6px solid rgba(0, 0, 0, 0.1);
-            width: 60px;
-            height: 60px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border-top-color: #4CAF50;
             animation: spin 1s linear infinite;
-            margin: 30px auto;
-            position: relative;
+            margin: 0 auto;
         }
         
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        
-        .loading-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .loading-text {
-            margin-top: 20px;
-            font-size: 24px;
-            color: #333;
-            font-weight: 500;
+        .spinner-text {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #666;
         }
         
         @keyframes spin {
@@ -398,16 +380,14 @@
             <div id="thankYouMessage" class="thank-you">ขอบคุณสำหรับการประเมิน!</div>
         </div>
         
-        <div id="spinner" class="spinner"></div>
-        <div id="errorMessage" class="error-message"></div>
+        <div id="spinnerContainer" class="spinner-container">
+            <div class="spinner"></div>
+            <div class="spinner-text">กำลังดำเนินการ...</div>
+        </div>
     </div>
     
     
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner"></div>
-        <div class="loading-text">กำลังประมวลผล...</div>
-    </div>
+    <div id="errorMessage" class="error-message"></div>
     
     <div id="settingsPanel" class="settings-panel">
         <button id="closeSettings" class="close-settings">✕</button>
@@ -664,12 +644,13 @@
                 currentRating = rating;
                 currentScore = score;
                 
+                // Show the spinner
+                document.getElementById('spinnerContainer').style.display = 'block';
+                
                 // For low scores (1-2), show improvement screen
                 if (score <= 2) {
-                    // Show loading briefly before switching screens
-                    document.getElementById('loadingOverlay').classList.add('active');
                     setTimeout(() => {
-                        document.getElementById('loadingOverlay').classList.remove('active');
+                        document.getElementById('spinnerContainer').style.display = 'none';
                         showScreen('improvementScreen');
                     }, 600);
                 } else {
@@ -686,6 +667,12 @@
                 const improvement = this.getAttribute('data-improvement');
                 const locationSelector = document.getElementById('locationSelector');
                 const location = locationSelector.value;
+                
+                // Show immediate visual feedback that button was pressed
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
                 
                 // Submit feedback with improvement data
                 submitFeedback(currentRating, currentScore, location, improvement);
@@ -705,8 +692,9 @@
 
         // Submit feedback
         function submitFeedback(rating, score, location, improvement) {
-            // Show loading overlay
-            document.getElementById('loadingOverlay').classList.add('active');
+            // Show spinner
+            const spinnerContainer = document.getElementById('spinnerContainer');
+            spinnerContainer.style.display = 'block';
             
             // Prepare data
             const timestamp = new Date().toISOString();
@@ -743,34 +731,29 @@
                             // If failed, add to queue
                             addToFeedbackQueue(feedbackData);
                         }
-                        // Add slight delay to make loading more visible
-                        setTimeout(() => {
-                            document.getElementById('loadingOverlay').classList.remove('active');
-                            showThankYouScreen();
-                        }, 800);
+                        showThankYouScreen();
                     })
                     .catch(error => {
                         console.error('Error submitting feedback:', error);
                         addToFeedbackQueue(feedbackData);
-                        setTimeout(() => {
-                            document.getElementById('loadingOverlay').classList.remove('active');
-                            showThankYouScreen();
-                        }, 800);
+                        showThankYouScreen();
                     });
             } else {
                 // Add to queue for later sync
                 addToFeedbackQueue(feedbackData);
-                // Simulate processing time
+                
+                // Simulate a brief delay for spinner visibility
                 setTimeout(() => {
-                    document.getElementById('loadingOverlay').classList.remove('active');
                     showThankYouScreen();
-                }, 800);
+                }, 700);
             }
         }
 
         // Show thank you screen
         function showThankYouScreen() {
-            document.getElementById('spinner').style.display = 'none';
+            // Hide spinner
+            document.getElementById('spinnerContainer').style.display = 'none';
+            
             showScreen('thankYouScreen');
             
             // Make sure thank you message is visible
